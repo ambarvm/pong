@@ -1,0 +1,28 @@
+body {
+	margin: 0px;
+	height: min-content;
+}
+
+@font-face {
+	font-family: 'retro';
+	src: url('./font.ttf');
+}
+
+#game-canvas {
+	width: 100vw;
+	height: calc(4 / 6) vw; /* height:width ratio */
+	max-height: 100vh;
+	max-width: calc(6 / 4) vh; /* width:height ratio */
+	margin: auto;
+	position: absolute;
+
+	background-color: black;
+
+	/* vertical center */
+	top: 0;
+	bottom: 0;
+
+	/* horizontal center */
+	left: 0;
+	right: 0;
+}
