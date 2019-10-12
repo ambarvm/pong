@@ -18,6 +18,11 @@ function displayFPS() {
 	context.fillText(`FPS:${Game.fps}`, 2, 15);
 }
 
+const sounds = {
+	paddle_hit: new Audio('../audio/paddle_hit.wav'),
+	score: new Audio('../audio/score.wav')
+};
+
 const Game = {
 	lastFrameTime: null,
 	fps: null,
@@ -39,6 +44,7 @@ const Game = {
 		player2.update(dt);
 
 		if (ball.x + ball.width > ball.canvas.width || ball.x < 0) {
+			sounds.score.play();
 			ball.reset();
 		}
 
@@ -46,12 +52,14 @@ const Game = {
 			ball.vx = -ball.vx * 1.03;
 			ball.randomizeYVelocity();
 			ball.x = player1.x + player1.width;
+			sounds.paddle_hit.play();
 			console.log('collided player1');
 		}
 		if (ball.collides(player2)) {
 			ball.vx = -ball.vx * 1.03;
 			ball.randomizeYVelocity();
 			ball.x = player2.x - ball.width;
+			sounds.paddle_hit.play();
 			console.log('collided player2');
 		}
 
