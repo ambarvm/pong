@@ -35,6 +35,8 @@ const Game = {
 	update: function(dt) {
 		// Update game state here
 		ball.update(dt);
+		player1.update(dt);
+		player2.update(dt);
 
 		if (ball.x + ball.width > ball.canvas.width || ball.x < 0) {
 			ball.reset();
@@ -57,14 +59,15 @@ const Game = {
 		context.fillText('Hello Pong!', canvas.width / 2, 30);
 
 		ball.render(context);
-
-		context.fillRect(10, 30, 5, 20);
-		context.fillRect(canvas.width - 15, canvas.height - 30, 5, 20);
+		player1.render();
+		player2.render();
 
 		displayFPS();
 	}
 };
 
 const ball = new Ball(canvas.width / 2 - 2, canvas.height / 2 - 2, 4, 4, context);
+const player1 = new Paddle(10, 30, { up: 87, down: 83 }, context);
+const player2 = new Paddle(canvas.width - 15, canvas.height - 30, { up: 38, down: 40 }, context);
 
 Game.init();
