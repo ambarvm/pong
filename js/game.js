@@ -19,8 +19,8 @@ function displayFPS() {
 }
 
 const sounds = {
-	paddle_hit: new Audio('../audio/paddle_hit.wav'),
-	score: new Audio('../audio/score.wav')
+	paddle_hit: new Audio('audio/paddle_hit.wav'),
+	score: new Audio('audio/score.wav')
 };
 
 const Game = {

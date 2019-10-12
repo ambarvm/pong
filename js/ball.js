@@ -1,5 +1,5 @@
 const sounds = {
-	wall_hit: new Audio('../audio/wall_hit.wav')
+	wall_hit: new Audio('audio/wall_hit.wav')
 };
 
 export class Ball {
