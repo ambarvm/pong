@@ -1,3 +1,7 @@
+const sounds = {
+	wall_hit: new Audio('../audio/wall_hit.wav')
+};
+
 export class Ball {
 	constructor(x, y, width, height, canvasContext) {
 		this.x = x;
@@ -19,11 +23,13 @@ export class Ball {
 		if (this.y <= 0) {
 			this.y = 0;
 			this.vy = -this.vy;
+			sounds.wall_hit.play();
 		}
 
 		if (this.y >= this.canvas.height - this.height) {
 			this.y = this.canvas.height - this.height;
 			this.vy = -this.vy;
+			sounds.wall_hit.play();
 		}
 	}
 
