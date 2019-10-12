@@ -40,7 +40,7 @@ export class Ball {
 	}
 
 	/**
-	 * Checks collision with paddle and returns a boolean value
+	 * Checks AABB collision with paddle and returns a boolean value
 	 */
 	collides(paddle) {
 		if (this.x > paddle.x + paddle.width || paddle.x > this.x + this.width) {
@@ -52,5 +52,14 @@ export class Ball {
 		}
 
 		return true;
+	}
+
+	randomizeYVelocity() {
+		let magnitude = Math.random() * 140 + 10;
+		if (this.vy < 0) {
+			this.vy = -magnitude;
+		} else {
+			this.vy = magnitude;
+		}
 	}
 }

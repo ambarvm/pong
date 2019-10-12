@@ -42,6 +42,19 @@ const Game = {
 			ball.reset();
 		}
 
+		if (ball.collides(player1)) {
+			ball.vx = -ball.vx * 1.03;
+			ball.randomizeYVelocity();
+			ball.x = player1.x + player1.width;
+			console.log('collided player1');
+		}
+		if (ball.collides(player2)) {
+			ball.vx = -ball.vx * 1.03;
+			ball.randomizeYVelocity();
+			ball.x = player2.x - ball.width;
+			console.log('collided player2');
+		}
+
 		if (fpsCounter == 20) {
 			Game.fps = Math.floor(1 / dt);
 			fpsCounter = 0;
