@@ -9,6 +9,9 @@ canvas.height = 243;
 
 const winScore = 5;
 
+let servingPlayer = Math.random() < 0.5 ? 1 : 2;
+let winningPlayer;
+
 let fpsCounter = 0;
 
 function displayFPS() {
@@ -32,6 +35,7 @@ function displayScore() {
 const Game = {
 	lastFrameTime: null,
 	fps: '',
+	state: 'start',
 	init: function(time) {
 		if (this.lastFrameTime) {
 			this.update((time - this.lastFrameTime) / 1000);
@@ -44,45 +48,67 @@ const Game = {
 		});
 	},
 	update: function(dt) {
-		// Update game state here
-		ball.update(dt);
-		player1.update(dt);
-		player2.update(dt);
+		if (this.state === 'serve') {
+			ball.vy = Math.random() * 100 - 50;
 
-		if (ball.x < 0) {
-			sounds.score.play();
-			player2.score++;
+			let magnitude = 140 + Math.random() * 60;
 
-			if (player2.score === winScore) {
-				player1.score = 0;
-				player2.score = 0;
+			if (servingPlayer === 1) {
+				ball.vx = magnitude;
+			} else {
+				ball.vx = -magnitude;
 			}
-			ball.reset();
-		}
 
-		if (ball.x + ball.width > canvas.width) {
-			sounds.score.play();
-			player1.score++;
-			if (player1.score === winScore) {
-				player1.score = 0;
-				player2.score = 0;
+			player1.update(dt);
+			player2.update(dt);
+		} else if (this.state === 'play') {
+			ball.update(dt);
+			player1.update(dt);
+			player2.update(dt);
+
+			if (ball.x < 0) {
+				sounds.score.play();
+				servingPlayer = 1;
+				player2.score++;
+
+				if (player2.score === winScore) {
+					winningPlayer = 2;
+					this.state = 'done';
+				} else {
+					this.state = 'serve';
+					ball.reset();
+				}
 			}
-			ball.reset();
-		}
 
-		if (ball.collides(player1)) {
-			ball.vx = -ball.vx * 1.03;
-			ball.randomizeYVelocity();
-			ball.x = player1.x + player1.width;
-			sounds.paddle_hit.play();
-			console.log('collided player1');
-		}
-		if (ball.collides(player2)) {
-			ball.vx = -ball.vx * 1.03;
-			ball.randomizeYVelocity();
-			ball.x = player2.x - ball.width;
-			sounds.paddle_hit.play();
-			console.log('collided player2');
+			if (ball.x + ball.width > canvas.width) {
+				sounds.score.play();
+				servingPlayer = 2;
+				player1.score++;
+
+				if (player1.score === winScore) {
+					winningPlayer = 1;
+					this.state = 'done';
+				} else {
+					this.state = 'serve';
+					ball.reset();
+				}
+			}
+
+			if (ball.collides(player1)) {
+				ball.vx = -ball.vx * 1.03;
+				ball.randomizeYVelocity();
+				ball.x = player1.x + player1.width;
+				sounds.paddle_hit.play();
+				console.log('collided player1');
+			}
+
+			if (ball.collides(player2)) {
+				ball.vx = -ball.vx * 1.03;
+				ball.randomizeYVelocity();
+				ball.x = player2.x - ball.width;
+				sounds.paddle_hit.play();
+				console.log('collided player2');
+			}
 		}
 
 		if (fpsCounter == 20) {
@@ -100,7 +126,19 @@ const Game = {
 		context.font = '15px retro';
 
 		// All rendering stuff
-		context.fillText('Hello Pong!', canvas.width / 2, 30);
+		if (this.state === 'start') {
+			context.fillText('Hello Pong!', canvas.width / 2, 20);
+			context.fillText('Press Enter to Play', canvas.width / 2, 40);
+		}
+
+		if (this.state === 'serve') {
+			context.fillText(`Player ${servingPlayer}'s Serve`, canvas.width / 2, 20);
+			context.fillText('Press Enter to serve', canvas.width / 2, 40);
+		}
+
+		if (this.state === 'done') {
+			context.fillText(`Player ${winningPlayer} Won`, canvas.width / 2, 20);
+		}
 
 		ball.render(context);
 		player1.render();
@@ -131,6 +169,25 @@ window.addEventListener(
 function isKeyDown(keyCode) {
 	return keys[keyCode];
 }
+
+window.addEventListener('keydown', key => {
+	if (key.keyCode === 13 /* Enter */) {
+		if (Game.state === 'start') {
+			Game.state = 'serve';
+		} else if (Game.state === 'serve') {
+			Game.state = 'play';
+		} else if (Game.state === 'done') {
+			Game.state = 'serve';
+			ball.reset();
+
+			// reset scores
+			player1.score = player2.score = 0;
+
+			// serving player opposite of winning player
+			servingPlayer = winningPlayer === 1 ? 2 : 1;
+		}
+	}
+});
 
 const ball = new Ball(canvas.width / 2 - 2, canvas.height / 2 - 2, 4, 4, context);
 const player1 = new Paddle(10, 30, { up: 87, down: 83 }, isKeyDown, context);
