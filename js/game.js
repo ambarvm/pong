@@ -66,8 +66,29 @@ const Game = {
 	}
 };
 
+let keys = [];
+window.addEventListener(
+	'keydown',
+	e => {
+		keys[e.keyCode] = true;
+	},
+	false
+);
+
+window.addEventListener(
+	'keyup',
+	e => {
+		keys[e.keyCode] = false;
+	},
+	false
+);
+
+function isKeyDown(keyCode) {
+	return keys[keyCode];
+}
+
 const ball = new Ball(canvas.width / 2 - 2, canvas.height / 2 - 2, 4, 4, context);
-const player1 = new Paddle(10, 30, { up: 87, down: 83 }, context);
-const player2 = new Paddle(canvas.width - 15, canvas.height - 30, { up: 38, down: 40 }, context);
+const player1 = new Paddle(10, 30, { up: 87, down: 83 }, isKeyDown, context);
+const player2 = new Paddle(canvas.width - 15, canvas.height - 30, { up: 38, down: 40 }, isKeyDown, context);
 
 Game.init();
