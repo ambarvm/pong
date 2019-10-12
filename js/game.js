@@ -7,20 +7,27 @@ const context = canvas.getContext('2d');
 canvas.width = 432;
 canvas.height = 243;
 
-context.font = '15px retro';
+const winScore = 5;
 
 let fpsCounter = 0;
 
 function displayFPS() {
 	context.fillStyle = 'green';
 	context.textAlign = 'left';
+	context.font = '15px retro';
 
 	context.fillText(`FPS:${Game.fps}`, 2, 15);
 }
 
+function displayScore() {
+	context.font = '30px retro';
+	context.fillText(player1.score, canvas.width / 2 - 50, canvas.height / 3);
+	context.fillText(player2.score, canvas.width / 2 + 50, canvas.height / 3);
+}
+
 const Game = {
 	lastFrameTime: null,
-	fps: null,
+	fps: '',
 	init: function(time) {
 		if (this.lastFrameTime) {
 			this.update((time - this.lastFrameTime) / 1000);
@@ -38,7 +45,22 @@ const Game = {
 		player1.update(dt);
 		player2.update(dt);
 
-		if (ball.x + ball.width > ball.canvas.width || ball.x < 0) {
+		if (ball.x < 0) {
+			player2.score++;
+
+			if (player2.score === winScore) {
+				player1.score = 0;
+				player2.score = 0;
+			}
+			ball.reset();
+		}
+
+		if (ball.x + ball.width > canvas.width) {
+			player1.score++;
+			if (player1.score === winScore) {
+				player1.score = 0;
+				player2.score = 0;
+			}
 			ball.reset();
 		}
 
@@ -67,6 +89,7 @@ const Game = {
 
 		context.fillStyle = 'white';
 		context.textAlign = 'center';
+		context.font = '15px retro';
 
 		// All rendering stuff
 		context.fillText('Hello Pong!', canvas.width / 2, 30);
@@ -75,6 +98,7 @@ const Game = {
 		player1.render();
 		player2.render();
 
+		displayScore();
 		displayFPS();
 	}
 };

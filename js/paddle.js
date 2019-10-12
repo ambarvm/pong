@@ -7,6 +7,7 @@ export class Paddle {
 		this.width = 5;
 		this.height = 20;
 		this.vy = 0;
+		this.score = 0;
 
 		this.canvasContext = canvasContext;
 		this.canvas = canvasContext.canvas;
